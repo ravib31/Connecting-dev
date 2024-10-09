@@ -48,6 +48,33 @@ app.get("/users", async (req, res) => {
   }
 });
 
+app.delete("/user", async (req, res) => {
+  // console.log(req.body);
+  const userId = req.body.userId;
+  try {
+    const user = await User.findByIdAndDelete(userId );
+    // console.log(user);
+    if (user.deletedCount == 0) {
+      res.status(404).send("User not found");
+    } else {
+      res.send("User deleted successfully");
+    }
+  } catch (error) {
+    res.status(500).send("Error adding user" + error.message);
+  }
+});
+app.patch("/user", async (req, res) => {
+  // console.log(req.body);
+  const userId = req.body.userId;
+  const userData = req.body;
+  try {
+    await User.findByIdAndUpdate({_id:userId},userData);
+    res.send("User updated successfully");
+  } catch (error) {
+    res.status(500).send("Error adding user" + error.message);
+  }
+});
+
 // Start the server
 connectDB()
   .then(() => {
