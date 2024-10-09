@@ -1,37 +1,64 @@
-const express = require('express');
-const connectDB = require('./config/database.js');
-const User = require('./models/user.js');
+const express = require("express");
+const connectDB = require("./config/database.js");
+const User = require("./models/user.js");
 const app = express();
-require('./config/database.js');
-
+require("./config/database.js");
 
 app.use(express.json());
 
-app.post('/signup',async(req,res)=>{
-    // console.log(req.body);
-    const userObj= req.body;
-    const user = new User(userObj);
-    try {
-      await user.save();
-      res.send('User added successfully');
-    } catch (error) {
-      res.status(500).send('Error adding user'+error.message);
+app.post("/signup", async (req, res) => {
+  // console.log(req.body);
+  const userObj = req.body;
+  const user = new User(userObj);
+  try {
+    await user.save();
+    res.send("User added successfully");
+  } catch (error) {
+    res.status(500).send("Error adding user" + error.message);
+  }
+});
+app.get("/user", async (req, res) => {
+  // console.log(req.body);
+  const userEmail = req.body.emailId;
+  try {
+    const user = await User.find({ email: userEmail });
+    // console.log(user);
+    if (user.length == 0) {
+      res.status(404).send("User not found");
+    } else {
+      res.send(user);
     }
-   
-   
+  } catch (error) {
+    res.status(500).send("Error adding user" + error.message);
+  }
 });
 
+app.get("/users", async (req, res) => {
+  // console.log(req.body);
+  try {
+    const user = await User.find();
+    // console.log(user);
+    if (user.length == 0) {
+      res.status(404).send("User not found");
+    } else {
+      res.send(user);
+    }
+  } catch (error) {
+    res.status(500).send("Error adding user" + error.message);
+  }
+});
 
 // Start the server
-connectDB().then(()=>{
-  app.listen(3000, () => {
-    console.log('connection  established to MongoDB');
-    console.log('Server is running on port 3000...')
+connectDB()
+  .then(() => {
+    app.listen(3000, () => {
+      console.log("connection  established to MongoDB");
+      console.log("Server is running on port 3000...");
+    });
   })
-}).catch((err)=>{
-  console.log('Error connecting to MongoDB', err);
-})
-
+  .catch((err) => {
+    console.log("Error connecting to MongoDB", err);
+  });
 
 // respond with "hello world" when a GET request is made to the homepage
 // app.get('/', (req, res) => {
