@@ -40,7 +40,12 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl:{
         type: String,
-        default:"https://avatars.githubusercontent.com/u/107496019?v=4"
+        default:"https://avatars.githubusercontent.com/u/107496019?v=4",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("Url is invalid")
+            }
+        }
     },
     about:{
         type: String,
