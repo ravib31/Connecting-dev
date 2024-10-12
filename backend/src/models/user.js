@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         trim:true,
         validate(value){
             if(!validator.isEmail(value)){
-                throw new Error("Email is invalid")
+                throw new Error("Email is invalid" + value)
             }
         }
     },
@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
         default:"https://avatars.githubusercontent.com/u/107496019?v=4",
         validate(value){
             if(!validator.isURL(value)){
-                throw new Error("Url is invalid")
+                throw new Error("Url is invalid" + value)
             }
         }
     },
