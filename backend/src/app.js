@@ -63,11 +63,22 @@ app.delete("/user", async (req, res) => {
     res.status(500).send("Error adding user" + error.message);
   }
 });
-app.patch("/user", async (req, res) => {
+
+app.patch("/user/:userId", async (req, res) => {
   // console.log(req.body);
-  const userId = req.body.userId;
+  const userId = req.params?.userId;
   const userData = req.body;
+
   try {
+    const ALLOWED_UPDATED = [
+      "photoUrl","about","password","gender","age","skills"
+    ]
+    const isUpdateAllowed = Object.keys(userData).every((key) =>
+      ALLOWED_UPDATED.includes(key)
+    );
+    if(!isUpdateAllowed){
+      throw new Error("Invalid update")
+    }
     const user = await User.findByIdAndUpdate({ _id: userId }, userData, {
       returnDocument: "after",
       runValidators: true,
