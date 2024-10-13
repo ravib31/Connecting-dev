@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("./config/database.js");
 const User = require("./models/user.js");
+const { validateSignupData } = require("./utils/validatoin.js");
 const app = express();
 require("./config/database.js");
 
@@ -11,6 +12,7 @@ app.post("/signup", async (req, res) => {
   const userObj = req.body;
   const user = new User(userObj);
   try {
+    validateSignupData(req);
     await user.save();
     res.send("User added successfully");
   } catch (error) {
