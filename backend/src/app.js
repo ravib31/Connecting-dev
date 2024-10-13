@@ -21,6 +21,26 @@ app.post("/signup", async (req, res) => {
     res.status(500).send("Error adding user" + error.message);
   }
 });
+
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).send("Invalid credentials");
+    }
+    res.send("Login successful");
+  } catch (error) {
+    res.status(500).send("Error logging in" + error.message);
+  }
+});
+
+
 app.get("/user", async (req, res) => {
   // console.log(req.body);
   const userEmail = req.body.emailId;
