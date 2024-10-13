@@ -38,14 +38,13 @@ app.post("/login", async (req, res) => {
     if (!user) {
       return res.status(404).send("User not found");
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.validatePassword(password);
     if (!isMatch) {
       return res.status(401).send("Invalid credentials");
     }
-    const token = await jwt.sign({ _id: user._id }, "Bhashkar",{expiresIn:"id"});
-    console.log(token);
-    res.cookie("token", token,{
-      expires: new Date(Date.now()+9000000)
+    const token = await user.getJWT();
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 9000000),
     });
     res.send("Login successful");
   } catch (error) {
@@ -53,19 +52,19 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", userAuth,async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-   const user = req.user;
+    const user = req.user;
     res.send(user);
   } catch (error) {
     res.status(400).send("Error :" + error.message);
   }
 });
 
-app.post("/sendConnectionRequest",userAuth,async(req,res)=>{
-     const user = req.user;
-     res.send(user.firstName + " "+ "Sent connection request")
-})
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+  const user = req.user;
+  res.send(user.firstName + " " + "Sent connection request");
+});
 // Start the server
 connectDB()
   .then(() => {
