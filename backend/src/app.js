@@ -42,9 +42,11 @@ app.post("/login", async (req, res) => {
     if (!isMatch) {
       return res.status(401).send("Invalid credentials");
     }
-    const token = await jwt.sign({ _id: user._id }, "Bhashkar");
+    const token = await jwt.sign({ _id: user._id }, "Bhashkar",{expiresIn:"id"});
     console.log(token);
-    res.cookie("token", token);
+    res.cookie("token", token,{
+      expires: new Date(Date.now()+9000000)
+    });
     res.send("Login successful");
   } catch (error) {
     res.status(500).send("Error logging in" + error.message);
@@ -60,7 +62,10 @@ app.get("/profile", userAuth,async (req, res) => {
   }
 });
 
-
+app.post("/sendConnectionRequest",userAuth,async(req,res)=>{
+     const user = req.user;
+     res.send(user.firstName + " "+ "Sent connection request")
+})
 // Start the server
 connectDB()
   .then(() => {
@@ -72,8 +77,3 @@ connectDB()
   .catch((err) => {
     console.log("Error connecting to MongoDB", err);
   });
-
-// respond with "hello world" when a GET request is made to the homepage
-// app.get('/', (req, res) => {
-//   res.send('hello world')
-// })
