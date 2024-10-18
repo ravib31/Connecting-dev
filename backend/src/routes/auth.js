@@ -5,6 +5,7 @@ const { validateSignupData } = require("../utils/validatoin.js");
 var jwt = require("jsonwebtoken");
 
 
+
 const authRouter = express.Router();
 
 authRouter.post("/signup", async (req, res) => {
@@ -47,6 +48,19 @@ authRouter.post("/login", async (req, res) => {
       res.status(500).send("Error logging in" + error.message);
     }
   });
+
+
+authRouter.post('/logout',async(req,res)=>{
+    try {
+        res.cookie('token',null,{
+          expires: new Date(Date.now()),
+        });
+        res.send('Logged out successfully');
+    } catch (error) {
+        res.status(500).send('Error logging out' + error.message);
+    }
+});
+
 
 
 module.exports = authRouter;
