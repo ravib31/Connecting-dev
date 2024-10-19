@@ -21,11 +21,12 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
       throw new Error("Invalid Edit data");
     }
     const loginUser = req.user;
-    console.log(loginUser);
+    // console.log(loginUser);
     Object.keys(req.body).forEach((key)=>
       loginUser[key] = req.body[key]);
-    console.log(loginUser);
-    res.send(`${loginUser.firstName} Profile updated successfully`);
+    // console.log(loginUser);
+    await loginUser.save();
+    res.json({message:`Hi ${loginUser.firstName}your profile updated successfully`,data:loginUser});
    } catch (error) {
       res.status(400).send("Error :" + error.message);
     }
