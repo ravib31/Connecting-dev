@@ -11,8 +11,7 @@
 -PATCH/profile/password
 
 # 3-ConnectionRequestRouter
--POST/request/send/interested/:userId
--POST/request/send/ignored/:userID
+-POST/request/send/:status/:userId
 -POST/request/review/accepted/:requestId
 -POST/request/review/rejected/:requestId
 
